@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-const PersonRow = ({ name, number }) => {
+import personService from './services/persons'
+const PersonRow = ({ name, number,handleDelete }) => {
   return (
     <tr>
       <td>{name}</td>
       <td>{number}</td>
+      <td>
+        <button onClick={handleDelete}>delete</button>
+      </td>
     </tr>
   )
 }
@@ -44,7 +48,7 @@ const PersonForm = ({
     </div>
   </form>
 )
-const Persons = ({ personsToShow }) => (
+const Persons = ({ personsToShow,handleDelete }) => (
   <table>
     <tbody>
       {personsToShow.map(person => 
@@ -52,6 +56,7 @@ const Persons = ({ personsToShow }) => (
           key={person.id} 
           name={person.name} 
           number={person.number} 
+          handleDelete={() => handleDelete(person.id)}
         />
       )}
     </tbody>
@@ -65,18 +70,40 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-      console.log('effect')
-      axios
-        .get('http://localhost:3001/persons')
-        .then(response => {
-          console.log('promise fulfilled')
-          setPersons(response.data)
-        })
+    console.log('effect')
+    personService
+      .getAll()
+      .then(data => {
+        console.log('promise fulfilled')
+        setPersons(data)
+      }
+      )
+      // axios
+      //   .get('http://localhost:3001/persons')
+      //   .then(response => {
+      //     console.log('promise fulfilled')
+      //     setPersons(response.data)
+      //   })
     }, [])
   const handleFilterChange = (event) => {
     setFilter(event.target.value) 
   }
-
+  const handleDelete = (id) => {
+    const person = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch(error => {
+          alert(
+            `The person '${person.name}' was already deleted from server`
+          )
+          setPersons(persons.filter(p => p.id !== id))
+      })
+  }
+}
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
@@ -101,10 +128,13 @@ const App = () => {
       number: newNumber,
       id: String(persons.length + 1) 
     }
-    
-    setPersons(persons.concat(newPersonObject))
-    setNewName("")
-    setNewNumber("") 
+    personService
+      .create(newPersonObject)
+      .then(response => {
+        setPersons(persons.concat(newPersonObject))
+        setNewName("")
+        setNewNumber("")
+      })
   }
   const personsToShow = persons.filter(person => 
     person.name.toLowerCase().includes(filter.toLowerCase())
@@ -133,6 +163,7 @@ const App = () => {
 
       <Persons 
         personsToShow={personsToShow} 
+        handleDelete={handleDelete}
       />
       
     </div>
