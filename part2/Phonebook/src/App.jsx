@@ -68,14 +68,14 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [errorMessage, setErrorMessage] = useState('some error happened...')
+  const [messageType, setMessageType] = useState('success')
   const [infoMessage, setInfoMessage] = useState(null)
-  const Notification = ({ message }) => {
+  const Notification = ({ message,type}) => {
   if (message === null) {
     return null
   }
   return (
-    <div className='notification'>
+    <div className={type}>
       {message}
     </div>
   )
@@ -108,6 +108,7 @@ const App = () => {
           setPersons(persons.filter(p => p.id !== id))
         })
         .catch(error => {
+          setMessageType('error')
           alert(
             `The person '${person.name}' was already deleted from server`
           )
@@ -124,25 +125,60 @@ const App = () => {
   }
   
   const addNote = (event) => {
-    event.preventDefault() 
-    
-    const exist = persons.some(person => person.name.toLowerCase() === newName.toLowerCase())
-    if (exist) {
-      alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewNumber('')
-      return
+    event.preventDefault()
+
+    // 1. 修改：使用 find 找到那个具体的人 (而不是用 some 返回 true/false)
+    const existingPerson = persons.find(p => p.name.toLowerCase() === newName.toLowerCase())
+
+    // 2. 如果人已经存在
+    if (existingPerson) {
+      const confirmUpdate = window.confirm(
+        `${existingPerson.name} is already added to phonebook, replace the old number with a new one?`
+      )
+
+      if (confirmUpdate) {
+        const changedPerson = { ...existingPerson, number: newNumber }
+
+        personService
+          .update(existingPerson.id, changedPerson)
+          .then(returnedPerson => {
+            // 更新成功，修改状态
+            setPersons(persons.map(p => p.id !== existingPerson.id ? p : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            setInfoMessage(`Updated ${returnedPerson.name}'s number`)
+            setTimeout(() => {
+              setInfoMessage(null)
+            }, 5000)
+          })
+          .catch(error => {
+            setMessageType('error')
+            // 处理错误：比如用户在服务器已经被删除了
+            setInfoMessage(
+              `Information of ${existingPerson.name} has already been removed from server`
+            )
+            // 从本地状态中移除这个“幽灵”用户
+            setPersons(persons.filter(n => n.id !== existingPerson.id))
+            setTimeout(() => {
+              setInfoMessage(null)
+            }, 5000)
+          })
+      }
+      return // 3. 关键：这里直接 return，终止函数。否则代码会继续往下走去执行创建操作
     }
-    
+
+
     const newPersonObject = {
       name: newName,
       number: newNumber,
       id: String(Date.now()) 
     }
+
     personService
       .create(newPersonObject)
       .then(response => {
-        setPersons(persons.concat(newPersonObject))
+        setMessageType('success')
+        setPersons(persons.concat(response)) 
         setNewName("")
         setNewNumber("")
         setInfoMessage(`Added ${response.name}`)
@@ -150,7 +186,9 @@ const App = () => {
           setInfoMessage(null)
         }, 5000)
       })
-      
+      .catch(error => {
+        console.log(error)
+      })
   }
   const personsToShow = persons.filter(person => 
     person.name.toLowerCase().includes(filter.toLowerCase())
@@ -159,7 +197,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={infoMessage} />
+      <Notification message={infoMessage} type={messageType} />
       <Filter 
         filter={filter} 
         handleFilterChange={handleFilterChange} 
