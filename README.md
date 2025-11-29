@@ -10,10 +10,11 @@ frequently used command
 npm create vite@latest #create a react program
 npm install
 npm run dev #start the program
-npx json-server --port 4000 db.json #start json server
-npm run server
+npm install json-server --save-dev
 npm install axios #install requiry
-npm install json-server --save-dev #install json-server as requiry
+npx json-server --port 3001 db.json #start json server
+npm run server
+
 ```
 then make some change in package.json
 ```json
