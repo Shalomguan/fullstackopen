@@ -30,3 +30,20 @@ then make some change in package.json
   },
 }
 ```
+define a custom npm script in the package.json file to start the development server
+```json
+{
+  // ..
+  "scripts": {
+    "start": "node index.js",
+
+    "dev": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  // ..
+}
+```
+start the server in development mode with the command
+```bash
+npm run dev
+```
