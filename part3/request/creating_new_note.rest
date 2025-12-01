@@ -1,6 +1,10 @@
-POST http://127.0.0.1:3001/api/notes
-Content-Type: appilication/json
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
 {
-    "content":"VS CODE rest client is a pretty handy tool!"
+    "content":"VS CODE rest client is a pretty handy tool!",
     "important":true
 }
+
+###
+GET http://localhost:3001/api/notes

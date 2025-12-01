@@ -22,8 +22,15 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 app.post('/api/notes', (request, response) => {
+  const maxId = notes.length > 0
+    ? Math.max(...notes.map(n => Number(n.id))) 
+    : 0
+
   const note = request.body
-  console.log(note)
+  note.id = String(maxId + 1)
+
+  notes = notes.concat(note)
+
   response.json(note)
 })
 app.delete('/api/notes/:id', (request, response) => {
