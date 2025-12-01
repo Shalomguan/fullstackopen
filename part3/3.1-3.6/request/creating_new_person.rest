@@ -1,0 +1,11 @@
+POST http://localhost:3001/api/persons
+
+Content-Type: application/json
+
+{
+    "name":"gsl",
+    "number":"18815095830"
+}
+
+###
+GET http://localhost:3001/api/persons
