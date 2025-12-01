@@ -43,14 +43,14 @@ app.get('/api/persons/:id', (req, res) => {
     const person = data.find(person => person.id === id)
     if (person) {
         res.json(person)
-    } else {
+    } else {    
         res.status(404).end()
     }
     
 })
 const generateId = () => {
     const maxId = 10000000
-    return Math.floor(Math.random()*maxId)
+    return String(Math.floor(Math.random()*maxId))
 }
 app.post('/api/persons', (req, res) => {
     const body = req.body
@@ -59,13 +59,13 @@ app.post('/api/persons', (req, res) => {
             error : "content missing"   
         })
     }
-    const note = {
+    const person = {
         name: body.name,
         number: body.number,
-        id: generateId()
+        id: generateId(),
     }
-    data = data.concat(note)
-    res.json(note)
+    data = data.concat(person)
+    res.json(data)
 })
 app.delete('/api/persons/:id', (req, res) => {
     const id = req.params.id
