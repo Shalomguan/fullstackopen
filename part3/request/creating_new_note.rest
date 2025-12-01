@@ -1,0 +1,6 @@
+POST http://127.0.0.1:3001/api/notes
+Content-Type: appilication/json
+{
+    "content":"VS CODE rest client is a pretty handy tool!"
+    "important":true
+}
