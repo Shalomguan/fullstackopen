@@ -30,6 +30,25 @@ then make some change in package.json
   },
 }
 ```
+start a beckend project
+```bash
+npm init
+npm install express
+```
+setup a package.json
+```json
+{
+  "name": "backend",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matti Luukkainen",
+  "license": "MIT"
+}
+```
 define a custom npm script in the package.json file to start the development server
 ```json
 {
