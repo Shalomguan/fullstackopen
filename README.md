@@ -66,3 +66,21 @@ start the server in development mode with the command
 ```bash
 npm run dev
 ```
+Deploy on Fly.io
+## linux
+```bash
+curl -L https://fly.io/install.sh | sh
+```
+## windows
+```bash
+pwsh -Command "iwr https://fly.io/install.ps1 -useb | iex"
+```
+
+```bash
+fly auth login
+fly launch --no-deploy
+fly deploy
+##sometimes we meet with some network error,we can use the command
+#fly deploy --depot=false
+fly apps open
+```
