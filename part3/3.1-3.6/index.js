@@ -1,6 +1,11 @@
 const express = require('express')
+var morgan = require('morgan')
 const app = express()
 app.use(express.json())
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 let data = [
     { 
       "id": "1",
@@ -23,6 +28,7 @@ let data = [
       "number": "39-23-6423122"
     }
 ]
+app.use(morgan('tiny'))
 app.get('/', (request, response) => {
     response.send('<h1>Phonebook Backend</h1>')
 })
@@ -81,6 +87,10 @@ app.delete('/api/persons/:id', (req, res) => {
         res.status(404).end()
     }
 })
+/*
+Add the morgan middleware to your application for logging. 
+Configure it to log messages to your console based on the tiny configuration.
+*/
 PORT = 3001
 
 app.listen(PORT)
