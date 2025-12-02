@@ -84,3 +84,24 @@ fly deploy
 #fly deploy --depot=false
 fly apps open
 ```
+## Note for linux user
+im using zsh in arch,so there might be an error
+:zsh: command not found:
+to solve it
+```bash
+nano ~/.zshrc
+```
+add those to the end of the file
+```shell
+export FLYCTL_INSTALL="$HOME/.fly"
+export PATH="$FLYCTL_INSTALL/bin:$PATH"
+```
+```bash
+source ~/.zshrc
+```
+## Note for Windows users
+Note that the standard shell commands in build:ui do not natively work in Windows. Powershell in Windows works differently, in which case the script could be written as
+```bash
+"build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../frontend && npm run build && @powershell Copy-Item dist -Recurse ../backend",
+```
+
