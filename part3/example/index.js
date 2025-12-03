@@ -1,8 +1,6 @@
 const express = require('express')
 const app = express()
-const cors = require('cors')
-app.use(cors())
-app.use(express.json())
+app.use(express.json())  // 这个需要在你的 Express 设置中
 app.use(express.static('dist'))
 let notes = [
   {
