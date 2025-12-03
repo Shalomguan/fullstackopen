@@ -13,14 +13,13 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
    useEffect(() => {
     console.log('effect')
-    axios
-      .get('http://localhost:3001/api/notes')
-      noteService
+
+    noteService
       .getAll()
       .then(initialNotes => {
         setNotes(initialNotes)
       })
-   }, [])
+  }, [])
   console.log('render', notes.length, 'notes')
   const Notification = ({ message }) => {
   if (message === null) {

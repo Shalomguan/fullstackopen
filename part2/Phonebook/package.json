@@ -8,6 +8,10 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+      "build:ui": "rm -rf dist && cd /home/ceiling/fullstackopen/part2/Phonebook && npm run build && cp -r dist /home/ceiling/fullstackopen/part3/Phonebook",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",    
+    "logs:prod": "fly logs",
     "server": "json-server -p 3001 db.json"
   },
   "dependencies": {
