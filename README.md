@@ -129,3 +129,7 @@ we can remove references to the cors library from the backend's index.js file an
 ```shell
 npm remove cors
 ```
+## How to Debug
+```
+node --inspect index.js
+```
