@@ -130,6 +130,11 @@ we can remove references to the cors library from the backend's index.js file an
 npm remove cors
 ```
 ## How to Debug
-```
+```shell
 node --inspect index.js
+```
+## run the database
+```shell
+npm install mongoose
+node mongo.js yourPassword
 ```

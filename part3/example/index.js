@@ -1,4 +1,16 @@
 const express = require('express')
+const mongoose = require('mongoose')
+const password = process.argv[2]
+
+const url = `mongodb+srv://shalongguan_db_user:${password}@cluster0.iwzdvk2.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0`
+mongoose.set('strictQuery',false)
+mongoose.connect(url, { family: 4 })
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+const Note = mongoose.model('Note', noteSchema)
 const app = express()
 app.use(express.json())  // 这个需要在你的 Express 设置中
 app.use(express.static('dist'))
