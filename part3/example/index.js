@@ -33,11 +33,17 @@ app.get('/api/notes', (request, response, next) => {
 
 app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
-    .then((note) => {
-      if (!note) return response.status(404).end()
-      response.json(note)
+    .then(note => {
+      if (note) {
+        response.json(note)
+      } else {
+        response.status(404).end()
+      }
     })
-    .catch(next)
+    .catch(error => {
+      console.log(error)
+      response.status(400).send({ error: 'malformatted id' })
+    })
 })
 
 app.post('/api/notes', (request, response, next) => {
@@ -51,7 +57,7 @@ app.post('/api/notes', (request, response, next) => {
     content: body.content,
     important: body.important || false,
   })
-
+  
   note.save()
     .then((savedNote) => response.json(savedNote))
     .catch(next)
@@ -66,13 +72,11 @@ app.delete('/api/notes/:id', (request, response, next) => {
     .catch(next)
 })
 
-// ---------- unknown endpoint ----------
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
-// ---------- error handler ----------
 const errorHandler = (error, request, response, next) => {
   console.error(error.name, error.message)
 
@@ -88,7 +92,6 @@ const errorHandler = (error, request, response, next) => {
 }
 app.use(errorHandler)
 
-// ---------- db connect & start ----------
 mongoose.set('strictQuery', false)
 
 const url = process.env.MONGODB_URI
